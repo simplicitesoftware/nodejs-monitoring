@@ -1,0 +1,12 @@
+{
+		"name": "simplicite-monitoring",
+				"version": "1.0.0",
+				"description": "Simplicite monitoring",
+				"main": "index.js",
+				"dependencies": {
+						"simplicite": "latest",
+						"mongodb": "latest"
+				},
+				"author": "Simplicite Software",
+				"license": "Apache 2.0"
+}
