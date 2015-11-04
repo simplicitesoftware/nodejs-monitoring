@@ -18,7 +18,11 @@ Prerequisites
 Create a `monitoring` table in the MySQL database:
 
 ```sql
-create table monitoring (name varchar(100), date datetime, data longtext);
+create table monitoring (
+	date datetime default current_timestamp,
+	url varchar(255),
+	data longtext
+);
 ``` 
 
 Usage
