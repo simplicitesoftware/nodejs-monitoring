@@ -1,7 +1,7 @@
 {
   "name": "nodejs-monitoring",
   "version": "0.0.2",
-  "description": "A simple monitoring tool for Simplicite(R) platform written in node.js", 
+  "description": "A simple monitoring tool for Simplicite(R) written in node.js(R)", 
   "dependencies": {
     "simplicite": "latest",
     "express": "latest",

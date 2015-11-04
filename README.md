@@ -8,7 +8,7 @@ Introduction
 ------------
 
 This is a simple monitoring app for the [Simplicit&eacute;&reg; platform](http://www.simplicitesoftware.com)
-using the [Simplicit&eacute;&reg; API for node.js](https://www.npmjs.com/package/simplicite).
+using the [Simplicit&eacute;&reg; API for node.js&reg;](https://www.npmjs.com/package/simplicite).
 
 **This is still a __ALPHA__ stage app, use at your own risks**
 
