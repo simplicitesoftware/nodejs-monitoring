@@ -6,7 +6,7 @@
     "simplicite": "latest",
     "express": "latest",
     "jade": "latest",
-    "mongodb": "latest"
+    "mysql": "latest"
   },
   "engines": {
     "node": "*"

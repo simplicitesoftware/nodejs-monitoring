@@ -12,12 +12,21 @@ using the [Simplicit&eacute;&reg; API for node.js&reg;](https://www.npmjs.com/pa
 
 **This is still a __ALPHA__ stage app, use at your own risks**
 
+Prerequisites
+-------------
+
+Create a `monitoring` table in the MySQL database:
+
+```sql
+create table monitoring (name varchar(100), date datetime, data longtext);
+``` 
+
 Usage
 -----
 
 To run it you need to install (or upgrade) the required packages and their dependencies:
 
-	npm install simplicite express jade
+	npm install simplicite express jade mysql
 
 Then you can run the application by:
 
