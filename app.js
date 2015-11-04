@@ -2,8 +2,9 @@ var mysql = require('mysql');
 var conn = mysql.createConnection({
 	host: process.env.VCAP_MYSQL_HOST || 'localhost',
 	port: process.env.VCAP_MYSQL_PORT || 3306,
-	user: process.env.VCAP_MYSQL_USER || 'test',
-	password: process.env.VCAP_MYSQL_PASSWORD || 'test'
+	database: process.env.VCAP_MYSQL_PORT || 'test',
+	user: process.env.VCAP_MYSQL_USER || 'root',
+	password: process.env.VCAP_MYSQL_PASSWORD || ''
 });
 
 conn.connect(function(err) {
