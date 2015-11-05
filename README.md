@@ -15,12 +15,24 @@ using the [Simplicit&eacute;&reg; API for node.js&reg;](https://www.npmjs.com/pa
 Prerequisites
 -------------
 
-Create a `monitoring` table in the MySQL database:
+Create a `monitoring` MySQL database by default with username and password set to `monitoring` (to match defaults in `app.js`):
 
 ```sql
-create table monitoring (
-	date datetime default current_timestamp,
-	url varchar(255),
+create database monitoring;
+grant all privileges on monitoring.* to monitoring@localhost identified by 'monitoring';
+flush privileges;
+```
+
+Then create the following tables:
+
+```sql
+create table monitoring_app (
+	name varchar(100) not null,
+	url varchar(255) not null
+);
+create table monitoring_data (
+	name varchar(100) not null,
+	ts timestamp default current_timestamp,
 	data longtext
 );
 ``` 
