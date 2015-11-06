@@ -8,97 +8,20 @@ html(lang="en")
         div(style="text-align: center;")
           img(src="logo.png", alt="Simplicit&eacute; Software", style="width: 100%; max-width: 500px;")
       div.row
-        div.col-md-12= "Date " + health.healthcheck.date + " (elapsed time: " + health.healthcheck.elapsedtime + " ms)"
+        div.col-md-12
+          p!= size + " app(s) found.&nbsp;"
+            a(href='') [refresh]
       div.row
-        div.col-md-4
-          h1 OS
-          table.table.table-striped
-            tr
-              th Code
-              th Value
-            tr
-              td Name
-              td= health.os.name
-            tr
-              td Architecture
-              td= health.os.architecture
-            tr
-              td Version
-              td= health.os.version
-        div.col-md-4
-          h1 Platform
-          table.table.table-striped
-            tr
-              th Code
-              th Value
-            tr
-              td Status
-              td= health.platform.status
-            tr
-              td Version
-              td= health.platform.version
-            tr
-              td Built date
-              td= health.platform.builton
-            tr
-              td Encoding
-              td= health.platform.encoding
-        div.col-md-4
-          h1 Application
-          table.table.table-striped
-            tr
-              th Code
-              th Value
-            tr
-              td URL
-              td= health.application.contexturl
-            tr
-              td Context path
-              td= health.application.contextpath
-            tr
-              td Active sessions
-              td= health.application.activesessions
-            tr
-              td Users (enabled / total)
-              td= health.application.enabledusers + " / " + health.application.totalusers
-      div.row
-        div.col-md-4
-          h1 Java VM
-          table.table.table-striped
-            tr
-              th Code
-              th Value
-            tr
-              td Name
-              td= health.javavm.vendor + " " + health.javavm.vmname 
-            tr
-              td Version
-              td= health.javavm.version + " " + health.javavm.vmversion
-            tr
-              td Heap (max / used / free)
-              td= health.javavm.heapmaxsize + " / " + health.javavm.heapsize + " / " + health.javavm.heapfree
-        div.col-md-4
-          h1 Cache
-          table.table.table-striped
-            tr
-              th Code
-              th Value
-            tr
-              td Grants (used / max)
-              td= health.cache.grantcache + " / " + health.cache.grantcachemax
-            tr
-              td Objects (used / max)
-              td= health.cache.objectcache + " / " + health.cache.objectcachemax
-            tr
-              td Process (used / max)
-              td= health.cache.processcache + " / " + health.cache.processcachemax
-        div.col-md-4
-          h1 Disk
-          table.table.table-striped
-            tr
-              th Code
-              th Value
-            tr
-              td Disk (free / usable)
-              td= health.disk.diskfree + " / " + health.disk.diskusable
+        each row in rows
+          div.col-md-3
+            div(class='panel panel-' + (row.status === 200 ? 'success' : 'danger'), id='app-' + row.name)
+              div.panel-heading
+                h4.text-center= row.name
+              div.panel-body(style='min-height: 150px;')
+                p.text-center
+                  img(src=row.health ? row.health.platform.version.substring(0,3) + '.png' : 'any.png')
+                  if (row.status === 200)
+                    a(href='health?name=' + row.name)= row.url
+                  else
+                    = row.url + ' (status ' + row.status + ')'
       include foot

@@ -28,12 +28,13 @@ Then create the following tables:
 ```sql
 create table monitoring_app (
 	name varchar(100) not null,
-	url varchar(255) not null
+	url varchar(255) not null,
+	active char(1) default '1'
 );
 create table monitoring_data (
 	name varchar(100) not null,
 	ts timestamp default current_timestamp,
-	data longtext
+	TODO: health data
 );
 ``` 
 
