@@ -26,7 +26,7 @@ html(lang='en')
                     p.text-center
                       a(href=row.url, target='_blank')= row.url
                     p.text-right
-                      a.btn.btn-default(href='health?name=' + row.name, role='button') Details
+                      a.btn.btn-success(href='health?name=' + row.name, role='button') Details
                   else
                     p.text-center= row.url + (row.status !== 0 ? ' (status ' + row.status + ')' : '')
       include foot
