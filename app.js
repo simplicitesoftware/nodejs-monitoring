@@ -1,4 +1,4 @@
-var debug = false, interval = 10;
+var debug = false, interval = 300;
 
 var mysql = require('mysql');
 var conn = mysql.createConnection({
@@ -17,7 +17,7 @@ conn.connect(function(err) {
 		console.log('Connected to MySQL');
 
 	function getApps(callback) {
-		conn.query('select name, url, interv from monitoring_app where active = \'1\'', callback);
+		conn.query('select name, url from monitoring_app where active = \'1\'', callback);
 	}
 	function addApp(app, callback) {
 		// TODO
