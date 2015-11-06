@@ -17,7 +17,7 @@ conn.connect(function(err) {
 		console.log('Connected to MySQL');
 
 	function getApps(callback) {
-		conn.query('select name, url from monitoring_app where active = \'1\'', callback);
+		conn.query('select name, url from monitoring_app where active = \'1\' order by name', callback);
 	}
 	function addApp(app, callback) {
 		// TODO
