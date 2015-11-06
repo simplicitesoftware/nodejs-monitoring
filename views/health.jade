@@ -9,7 +9,7 @@ html(lang='en')
     div.container(style='margin-top: 25px')
       div.well
         div(style='text-align: center;')
-          img(src='logo.png', alt='Simplicit&eacute; Software', style='width: 100%; max-width: 500px;')
+          img(src='logo-dark.png', alt='Simplicit&eacute; Software', style='width: 100%; max-width: 500px;')
       div.row
         div.col-md-12
           a(href='health?name=' + name)
@@ -57,10 +57,8 @@ html(lang='en')
               th Value
             tr
               td URL
-              td= application.contexturl
-            tr
-              td Context path
-              td= application.contextpath
+              td
+                a(href=application.contexturl + application.contextpath, target='_blank')= application.contexturl + application.contextpath
             tr
               td Active sessions
               td= application.activesessions

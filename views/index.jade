@@ -6,7 +6,7 @@ html(lang='en')
     div.container(style='margin-top: 25px')
       div.well
         div(style='text-align: center;')
-          img(src='logo.png', alt='Simplicit&eacute; Software', style='width: 100%; max-width: 500px;')
+          img(src='logo-dark.png', alt='Simplicit&eacute; Software', style='width: 100%; max-width: 500px;')
       div.row
         div.col-md-12
           p
@@ -19,12 +19,14 @@ html(lang='en')
             div(class='panel panel-' + (row.status === 200 ? 'success' : (row.status === 0 ? 'default' : 'danger')), id='app-' + row.name)
               div.panel-heading
                 h4.text-center= row.name
-              div.panel-body(style='min-height: 150px;')
+              div.panel-body(style='min-height: 200px;')
                 p.text-center
-                  img(src=row.health ? row.health.platform.version.substring(0,3) + '.png' : 'any.png')
-                  br
+                  img(src=(row.health ? row.health.platform.version.substring(0,3) : 'any') + '-dark.png')
                   if (row.status === 200)
-                    a(href='health?name=' + row.name)= row.url
+                    p.text-center
+                      a(href=row.url, target='_blank')= row.url
+                    p.text-right
+                      a.btn.btn-success(href='health?name=' + row.name, role='button') Details
                   else
-                    = row.url + ' (status ' + row.status + ')'
+                    p.text-center= row.url + (row.status !== 0 ? ' (status ' + row.status + ')' : '')
       include foot
