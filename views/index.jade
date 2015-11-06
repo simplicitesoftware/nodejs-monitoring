@@ -20,6 +20,7 @@ html(lang="en")
               div.panel-body(style='min-height: 150px;')
                 p.text-center
                   img(src=row.health ? row.health.platform.version.substring(0,3) + '.png' : 'any.png')
+                  br
                   if (row.status === 200)
                     a(href='health?name=' + row.name)= row.url
                   else
