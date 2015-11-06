@@ -1,17 +1,17 @@
 doctype html
-html(lang="en")
+html(lang='en')
   head
     include head
-    //- link(rel="stylesheet", href="jqplot/jquery.jqplot.min.css")
-    //- script(type="text/javascript", src="jqplot/jquery.jqplot.min.js")
-    //- script(type="text/javascript", src="jqplot/jqplot.dateAxisRenderer.min.js")
+    //- link(rel='stylesheet', href='jqplot/jquery.jqplot.min.css')
+    //- script(type='text/javascript', src='jqplot/jquery.jqplot.min.js')
+    //- script(type='text/javascript', src='jqplot/jqplot.dateAxisRenderer.min.js')
   body
-    div.container(style="margin-top: 25px")
+    div.container(style='margin-top: 25px')
       div.well
-        div(style="text-align: center;")
-          img(src="logo.png", alt="Simplicit&eacute; Software", style="width: 100%; max-width: 500px;")
+        div(style='text-align: center;')
+          img(src='logo.png', alt='Simplicit&eacute; Software', style='width: 100%; max-width: 500px;')
       div.row
-        div.col-md-12= "Date " + healthcheck.date + " (elapsed time: " + healthcheck.elapsedtime + " ms)"
+        div.col-md-12= 'Date ' + healthcheck.date + ' (elapsed time: ' + healthcheck.elapsedtime + ' ms)'
       div.row
         div.col-md-4
           h1 OS
@@ -63,7 +63,7 @@ html(lang="en")
               td= application.activesessions
             tr
               td Users (enabled / total)
-              td= application.enabledusers + " / " + application.totalusers
+              td= application.enabledusers + ' / ' + application.totalusers
       div.row
         div.col-md-4
           h1 Java VM
@@ -73,13 +73,13 @@ html(lang="en")
               th Value
             tr
               td Name
-              td= javavm.vendor + " " + javavm.vmname 
+              td= javavm.vendor + ' ' + javavm.vmname 
             tr
               td Version
-              td= javavm.version + " " + javavm.vmversion
+              td= javavm.version + ' ' + javavm.vmversion
             tr
               td Heap (max / used / free)
-              td= javavm.heapmaxsize + " / " + javavm.heapsize + " / " + javavm.heapfree
+              td= javavm.heapmaxsize + ' / ' + javavm.heapsize + ' / ' + javavm.heapfree
         div.col-md-4
           h1 Cache
           table.table.table-striped
@@ -88,13 +88,13 @@ html(lang="en")
               th Value
             tr
               td Grants (used / max)
-              td= cache.grantcache + " / " + cache.grantcachemax
+              td= cache.grantcache + ' / ' + cache.grantcachemax
             tr
               td Objects (used / max)
-              td= cache.objectcache + " / " + cache.objectcachemax
+              td= cache.objectcache + ' / ' + cache.objectcachemax
             tr
               td Process (used / max)
-              td= cache.processcache + " / " + cache.processcachemax
+              td= cache.processcache + ' / ' + cache.processcachemax
         div.col-md-4
           h1 Disk
           table.table.table-striped
@@ -103,5 +103,5 @@ html(lang="en")
               th Value
             tr
               td Disk (free / usable)
-              td= disk.diskfree + " / " + disk.diskusable
+              td= disk.diskfree + ' / ' + disk.diskusable
       include foot
