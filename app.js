@@ -56,7 +56,8 @@ conn.connect(function(err) {
 						session.getHealth().then(function(health) {
 							try {
 								var n = health._scope._name;
-								delete health._scope;
+								delete health._scope; // Remove scope reference from response
+								health.name = n; // Add name for health view
 								apps[n].status = 200;
 								apps[n].health = health;
 								// TODO: save health data
@@ -67,7 +68,7 @@ conn.connect(function(err) {
 						}, function(err) {
 							try {
 								var n = err._scope._name;
-								delete err._scope;
+								delete err._scope; // Remove scope reference from response
 								apps[n].status = err.status || 404;
 								delete apps[n].health;
 								console.error('Error on ' + n + ' = ' + err.message);
@@ -103,6 +104,7 @@ conn.connect(function(err) {
 				if (name) {
 					console.log('Health page requested for name = ' + name);
 					var h = apps[name].health;
+					
 					if (h)
 						res.render('health', h);
 					else
