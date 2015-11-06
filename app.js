@@ -50,7 +50,7 @@ conn.connect(function(err) {
 							apps[n].status = 200;
 							apps[n].health = health;
 							// TODO: save health data
-							console.log(n + ' = ' + JSON.stringify(health));
+							console.log(n + ' = ' + health.platform.status);
 						} catch(e) {
 							console.error(e);
 						}
@@ -61,7 +61,7 @@ conn.connect(function(err) {
 							console.log(err);
 							apps[n].status = err.status || 404;
 							delete apps[n].health;
-							console.error(n + ' = ' + JSON.stringify(err));
+							console.error(n + ' = ' + err.message);
 						} catch(e) {
 							console.error(e);
 						}
