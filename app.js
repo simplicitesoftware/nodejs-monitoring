@@ -17,55 +17,65 @@ conn.connect(function(err) {
 		console.log('Connected to MySQL');
 
 	function getApps(callback) {
-		conn.query('select name, url from monitoring_app where active = \'1\' order by name', callback);
+		conn.query('select name, url, active from monitoring_app order by name', callback);
 	}
-	function addApp(app, callback) {
-		// TODO
+	function addApp(name, url, callback) {
+		conn.query('insert into monitoring_app(name, url) values (?)', { name: name, url: url }, callback);
 	}
-	function removeApp(app, callback) {
-		// TODO
+	function removeApp(name, callback) {
+		conn.query('delete from monitoring_app where name = \'' + name + '\'', callback);
 	}
-	function updateApp(app, callback) {
-		// TODO
+	function updateApp(name, data, callback) {
+		data = data || {};
+		conn.query('update monitoring_app set ? where name = \'' + name + '\'', data, callback);
+	}
+	function saveData(name, data, callback) {
+		conn.query('insert into monitoring_data(name, data) values (?)', { name: name, data: JSON.stringify(data) }, callback);
 	}
 
 	var simplicite = require('simplicite');
-	var apps = {};
+	var apps;
 	getApps(function (err, rs) {
+		apps = {};
 		if (!err) {
 			for (var k = 0; k < rs.length; k++) {
 				var r = rs[k];
 				apps[r.name] = r;
-				apps[r.name].session = simplicite.session({ url: r.url, debug: debug });
-				apps[r.name].session._name = r.name; // ZZZ Name stored at session level to retreive it then() functions
+				apps[r.name].status = 0;
+				if (r.active === '1') {
+					apps[r.name].session = simplicite.session({ url: r.url, debug: debug });
+					apps[r.name].session._name = r.name; // ZZZ Name stored at session level to retreive it then() functions
+				}
 			}
 
 			function monitorApps() {
 				for (var name in apps) {
-					console.log('Background monitoring for ' + name);
-					apps[name].session.getHealth().then(function(health) {
-						try {
-							var n = health._scope._name;
-							delete health._scope;
-							apps[n].status = 200;
-							apps[n].health = health;
-							// TODO: save health data
-							console.log(n + ' = ' + health.platform.status);
-						} catch(e) {
-							console.error(e);
-						}
-					}, function(err) {
-						try {
-							var n = err._scope._name;
-							delete err._scope;
-							console.log(err);
-							apps[n].status = err.status || 404;
-							delete apps[n].health;
-							console.error(n + ' = ' + err.message);
-						} catch(e) {
-							console.error(e);
-						}
-					});
+					var session = apps[name].session;
+					if (session) {
+						console.log('Request to ' + name);
+						session.getHealth().then(function(health) {
+							try {
+								var n = health._scope._name;
+								delete health._scope;
+								apps[n].status = 200;
+								apps[n].health = health;
+								// TODO: save health data
+								console.log('Response from ' + n + ' = ' + health.platform.status);
+							} catch(e) {
+								console.error(e);
+							}
+						}, function(err) {
+							try {
+								var n = err._scope._name;
+								delete err._scope;
+								apps[n].status = err.status || 404;
+								delete apps[n].health;
+								console.error('Error on ' + n + ' = ' + err.message);
+							} catch(e) {
+								console.error(e);
+							}
+						});
+					}
 				}
 				setTimeout(monitorApps, interval * 1000);
 			}

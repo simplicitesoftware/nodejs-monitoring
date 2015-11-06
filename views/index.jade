@@ -11,12 +11,12 @@ html(lang='en')
         div.col-md-12
           p
             a(href='')
-              span.glyphicon.glyphicon-refresh(style='cursor: pointer;')
+              span.glyphicon.glyphicon-refresh
             != '&nbsp;' + size + ' app(s)'
       div.row
         each row in rows
           div.col-md-3
-            div(class='panel panel-' + (row.status === 200 ? 'success' : 'danger'), id='app-' + row.name)
+            div(class='panel panel-' + (row.status === 200 ? 'success' : (row.status === 0 ? 'default' : 'danger')), id='app-' + row.name)
               div.panel-heading
                 h4.text-center= row.name
               div.panel-body(style='min-height: 150px;')
