@@ -12,14 +12,14 @@ html(lang='en')
           img(src='logo.png', alt='Simplicit&eacute; Software', style='width: 100%; max-width: 500px;')
       div.row
         div.col-md-12
-          a(href='?name=' + name)
-            span.glyphicon.glyphicon-refresh(title="Refresh page")
-          != '&nbsp; date ' + healthcheck.date + ' (elapsed time: ' + healthcheck.elapsedtime + ' ms)&nbsp;'
-          a(href='?name=' + name + "&force=true")
-            span.glyphicon.glyphicon-flash(title="Call now and refresh page")
-      div.row
-        div.col-md-12
           h1 Application monitoring
+          p
+            a(href='?name=' + name)
+              span.glyphicon.glyphicon-refresh(title="Refresh page")
+            != '&nbsp; date ' + healthcheck.date + ' (elapsed time: ' + healthcheck.elapsedtime + ' ms)&nbsp;'
+            a(href='?name=' + name + "&force=true")
+              span.glyphicon.glyphicon-flash(title="Call now and refresh page")
+      div.row
         div.col-md-4
           h2 Application
           table.table.table-striped
