@@ -18,8 +18,10 @@ html(lang='en')
           a(href='?name=' + name + "&force=true")
             span.glyphicon.glyphicon-flash(title="Call now and refresh page")
       div.row
+        div.col-md-12
+          h1 Application monitoring
         div.col-md-4
-          h1 Application
+          h2 Application
           table.table.table-striped
             tr
               th Code
@@ -35,7 +37,7 @@ html(lang='en')
               td Users (enabled / total)
               td= application.enabledusers + ' / ' + application.totalusers
         div.col-md-4
-          h1 OS
+          h2 OS
           table.table.table-striped
             tr
               th Code
@@ -50,7 +52,7 @@ html(lang='en')
               td Version
               td= os.version
         div.col-md-4
-          h1 Platform
+          h2 Platform
           table.table.table-striped
             tr
               th Code
@@ -69,7 +71,7 @@ html(lang='en')
               td= platform.encoding
       div.row
         div.col-md-4
-          h1 Java VM
+          h2 Java VM
           table.table.table-striped
             tr
               th Code
@@ -84,7 +86,7 @@ html(lang='en')
               td Heap (max / used / free)
               td= javavm.heapmaxsize + ' / ' + javavm.heapsize + ' / ' + javavm.heapfree
         div.col-md-4
-          h1 Cache
+          h2 Cache
           table.table.table-striped
             tr
               th Code
@@ -99,7 +101,7 @@ html(lang='en')
               td Process (used / max)
               td= cache.processcache + ' / ' + cache.processcachemax
         div.col-md-4
-          h1 Disk
+          h2 Disk
           table.table.table-striped
             tr
               th Code
