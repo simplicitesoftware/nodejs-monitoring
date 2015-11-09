@@ -13,8 +13,10 @@ html(lang='en')
       div.row
         div.col-md-12
           a(href='health?name=' + name)
-            span.glyphicon.glyphicon-refresh
-          != '&nbsp; date ' + healthcheck.date + ' (elapsed time: ' + healthcheck.elapsedtime + ' ms)'
+            span.glyphicon.glyphicon-refresh(title="Refresh page")
+          != '&nbsp; date ' + healthcheck.date + ' (elapsed time: ' + healthcheck.elapsedtime + ' ms)&nbsp;'
+          a(href='health?name=' + name + "&force=true")
+            span.glyphicon.glyphicon-flash(title="Call now and refresh page")
       div.row
         div.col-md-4
           h1 OS
