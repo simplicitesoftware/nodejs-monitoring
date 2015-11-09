@@ -47,9 +47,9 @@ To run it you need to install (or upgrade) the required packages and their depen
 
 Then you can run the application by:
 
-	node app.js
+	node app.js [<host, defaults to 'localhost'> [<port, defaults to 3000>]]
 
-The base URL to point to is then: `http://localhost:3000`
+The base URL to point to is then: `http://<host>:<port>`
 
 License
 -------
