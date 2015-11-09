@@ -31,5 +31,5 @@ html(lang='en')
                     = row.url + (row.status !== 0 ? ' (status ' + row.status + ')' : '')
                 td
                   if (row.status === 200)
-                    a.btn.btn-xs.btn-success(href='?name=' + row.name, role='button') Details
+                    a.btn.btn-xs.btn-info(href='?name=' + row.name, role='button') Details
       include foot
