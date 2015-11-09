@@ -97,13 +97,6 @@ conn.connect(function(err) {
 				res.header('Expires', '-1');
 				res.header('Pragma', 'no-cache');
 				console.log('Home page requested');
-				res.render('index', { size: rs.length, rows: apps });
-			});
-
-			server.get('/health', function(req, res) {
-				res.header('Cache-Control', 'private, no-cache, no-store, no-transform, must-revalidate');
-				res.header('Expires', '-1');
-				res.header('Pragma', 'no-cache');
 				var name = req.query ? req.query.name : null;
 				if (name) {
 					console.log('Health page requested for name = ' + name);
@@ -121,7 +114,7 @@ conn.connect(function(err) {
 					else
 						render(name);
 				} else
-					res.render('error', { error: 'Missing name' });
+					res.render('index', { size: rs.length, rows: apps });
 			});
 
 			var host = process.env.VCAP_APP_HOST || 'localhost';

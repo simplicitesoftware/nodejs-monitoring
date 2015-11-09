@@ -13,20 +13,21 @@ html(lang='en')
             a(href='')
               span.glyphicon.glyphicon-refresh(title="Refresh page")
             != '&nbsp;' + size + ' app(s)'
-      div.row
-        each row in rows
-          div.col-md-3
-            div(class='panel panel-' + (row.status === 200 ? 'success' : (row.status === 0 ? 'default' : 'danger')), id='app-' + row.name)
-              div.panel-heading
-                h4.text-center= row.name
-              div.panel-body(style='min-height: 200px;')
-                p.text-center
-                  img(src=(row.health ? row.health.platform.version.substring(0,3) : 'any') + '-dark.png')
+          h1 Applications
+          table.table.table-striped
+            tr
+              th Name
+              th URL
+              th Details
+            each row in rows
+              tr
+                td(class=row.status !== 0 ? (row.status === 200 ? "success" : "danger") : "")= row.name
+                td
                   if (row.status === 200)
-                    p.text-center
-                      a(href=row.url, target='_blank')= row.url
-                    p.text-right
-                      a.btn.btn-success(href='health?name=' + row.name, role='button') Details
+                    a(href=row.url, target='_blank')= row.url
                   else
-                    p.text-center= row.url + (row.status !== 0 ? ' (status ' + row.status + ')' : '')
+                    = row.url + (row.status !== 0 ? ' (status ' + row.status + ')' : '')
+                td
+                  if (row.status === 200)
+                    a.btn.btn-xs.btn-success(href='?name=' + row.name, role='button') Details
       include foot

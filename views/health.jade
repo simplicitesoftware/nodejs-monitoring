@@ -12,12 +12,28 @@ html(lang='en')
           img(src='logo-dark.png', alt='Simplicit&eacute; Software', style='width: 100%; max-width: 500px;')
       div.row
         div.col-md-12
-          a(href='health?name=' + name)
+          a(href='?name=' + name)
             span.glyphicon.glyphicon-refresh(title="Refresh page")
           != '&nbsp; date ' + healthcheck.date + ' (elapsed time: ' + healthcheck.elapsedtime + ' ms)&nbsp;'
-          a(href='health?name=' + name + "&force=true")
+          a(href='?name=' + name + "&force=true")
             span.glyphicon.glyphicon-flash(title="Call now and refresh page")
       div.row
+        div.col-md-4
+          h1 Application
+          table.table.table-striped
+            tr
+              th Code
+              th Value
+            tr
+              td URL
+              td
+                a(href=application.contexturl + application.contextpath, target='_blank')= application.contexturl + application.contextpath
+            tr
+              td Active sessions
+              td= application.activesessions
+            tr
+              td Users (enabled / total)
+              td= application.enabledusers + ' / ' + application.totalusers
         div.col-md-4
           h1 OS
           table.table.table-striped
@@ -51,22 +67,6 @@ html(lang='en')
             tr
               td Encoding
               td= platform.encoding
-        div.col-md-4
-          h1 Application
-          table.table.table-striped
-            tr
-              th Code
-              th Value
-            tr
-              td URL
-              td
-                a(href=application.contexturl + application.contextpath, target='_blank')= application.contexturl + application.contextpath
-            tr
-              td Active sessions
-              td= application.activesessions
-            tr
-              td Users (enabled / total)
-              td= application.enabledusers + ' / ' + application.totalusers
       div.row
         div.col-md-4
           h1 Java VM
