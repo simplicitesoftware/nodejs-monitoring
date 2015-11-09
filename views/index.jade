@@ -17,11 +17,13 @@ html(lang='en')
           table.table.table-striped
             tr
               th Name
+              th Version
               th URL
               th Details
             each row in rows
               tr
                 td(class=row.status !== 0 ? (row.status === 200 ? "success" : "danger") : "")= row.name
+                td= row.health ? row.health.platform.version.substring(0,3) : ''
                 td
                   if (row.status === 200)
                     a(href=row.url, target='_blank')= row.url
