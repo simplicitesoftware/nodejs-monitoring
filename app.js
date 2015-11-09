@@ -1,3 +1,5 @@
+"use strict";
+
 var debug = false, interval = 300;
 
 var mysql = require('mysql');
@@ -117,10 +119,11 @@ conn.connect(function(err) {
 					res.render('index', { size: rs.length, rows: apps });
 			});
 
-			var host = process.env.VCAP_APP_HOST || 'localhost';
-			var port = process.env.VCAP_APP_PORT || 3000;
+			var args = process.argv.slice(2);
+			var host = process.env.VCAP_APP_HOST || args[0] || 'localhost';
+			var port = process.env.VCAP_APP_PORT || args[1] || 3000;
 
-			server.listen(port, host);
+			server.listen(port, parseInt(host));
 
 			console.log('Server listening on ' + host + ':' + port);
 		} else
