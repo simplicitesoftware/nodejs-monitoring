@@ -99,7 +99,7 @@ conn.connect(function(err) {
 			var serverPort = process.env.VCAP_APP_PORT || args[1] || 3000;
 
 			var basicAuth = require('basic-auth');
-			var basicAuthUser = process.env.VCAP_APP_USER || args[2];
+			var basicAuthUser = process.env.VCAP_APP_USERNAME || args[2];
 			var basicAuthPass = process.env.VCAP_APP_PASSWORD || args[3];
 
 			server.get('/', function(req, res) {
