@@ -6,6 +6,7 @@
     "simplicite": "latest",
     "express": "latest",
     "jade": "latest",
+    "basic-auth": "latest",
     "mysql": "latest"
   },
   "engines": {

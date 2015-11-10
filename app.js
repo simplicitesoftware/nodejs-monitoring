@@ -94,9 +94,16 @@ conn.connect(function(err) {
 			server.set('view engine', 'jade');
 			server.set('views', __dirname + '/views');
 
+			var args = process.argv.slice(2);
+			var serverHost = process.env.VCAP_APP_HOST || args[0] || 'localhost';
+			var serverPort = process.env.VCAP_APP_PORT || args[1] || 3000;
+
+			var basicAuth = require('basic-auth');
+			var basicAuthUser = process.env.VCAP_APP_USER || args[2];
+			var basicAuthPass = process.env.VCAP_APP_PASSWORD || args[3];
+
 			server.get('/', function(req, res) {
 				function render(n) {
-					console.log(n);
 					var h = apps[n].health;
 					if (h)
 						res.render('health', h);
@@ -107,26 +114,27 @@ conn.connect(function(err) {
 				res.header('Cache-Control', 'private, no-cache, no-store, no-transform, must-revalidate');
 				res.header('Expires', '-1');
 				res.header('Pragma', 'no-cache');
-				console.log('Home page requested');
-				var name = req.query ? req.query.name : null;
-				if (name) {
-					console.log('Health page requested for name = ' + name);
-					var force = req.query ? req.query.force : null;
-					if (force)
-						monitorApp(name, render);
-					else
-						render(name);
-				} else
-					res.render('index', { size: rs.length, rows: apps });
+
+				var credentials = basicAuth(req);
+				if (basicAuthUser && basicAuthPass && (!credentials || credentials.name != basicAuthUser || credentials.pass != basicAuthPass)) {
+					res.statusCode = 401;
+					res.setHeader('WWW-Authenticate', 'Basic realm="Monitoring"');
+					res.render('error', { error: 'Access denied' });
+				} else {
+					var name = req.query ? req.query.name : null;
+					if (name) {
+						var force = req.query ? req.query.force : null;
+						if (force)
+							monitorApp(name, render);
+						else
+							render(name);
+					} else
+						res.render('index', { size: rs.length, rows: apps });
+				}
 			});
 
-			var args = process.argv.slice(2);
-			var host = process.env.VCAP_APP_HOST || args[0] || 'localhost';
-			var port = process.env.VCAP_APP_PORT || args[1] || 3000;
-
-			server.listen(port, parseInt(host));
-
-			console.log('Server listening on ' + host + ':' + port);
+			server.listen(serverPort, serverHost);
+			console.log('Server listening on ' + serverHost + ':' + serverPort);
 		} else
 			console.error(err);
 	});
