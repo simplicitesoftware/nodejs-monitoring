@@ -34,7 +34,20 @@ create table monitoring_app (
 create table monitoring_data (
 	name varchar(100) not null,
 	ts timestamp default current_timestamp,
-	TODO: health data
+	nbsessions integer default 0,
+	users_nbtotals integer default 0,
+	users_nbenabled integer default 0,
+	heap_max integer default 0,
+	heap_used integer default 0,
+	heap_free integer default 0,
+	grantcache_max integer default 0,
+	grantcache_used integer default 0,
+	objectcache_max integer default 0,
+	objectcache_used integer default 0,
+	processcache_max integer default 0,
+	processcache_used integer default 0,
+	disk_usable integer default 0,
+	disk_free integer default 0
 );
 ``` 
 
