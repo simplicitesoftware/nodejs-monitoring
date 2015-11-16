@@ -7,7 +7,9 @@
     "express": "latest",
     "jade": "latest",
     "basic-auth": "latest",
-    "mysql": "latest"
+    "mysql": "latest",
+    "nodemailer": "latest",
+    "nodemailer-smtp-transport": "latest"
   },
   "engines": {
     "node": "*"

@@ -14,10 +14,10 @@ html(lang='en')
         div.col-md-12
           h1 Monitoring
           p
-            a(href='?name=' + name)
+            a(href='/?name=' + name + '&action=health')
               span.glyphicon.glyphicon-refresh(title="Refresh page")
             != '&nbsp; date ' + healthcheck.date + ' (elapsed time: ' + healthcheck.elapsedtime + ' ms)&nbsp;'
-            a(href='?name=' + name + "&force=true")
+            a(href='/?name=' + name + "&action=health&force=true")
               span.glyphicon.glyphicon-flash(title="Call now and refresh page")
       div.row
         div.col-md-4

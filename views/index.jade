@@ -11,25 +11,29 @@ html(lang='en')
         div.col-md-12
           h1 Applications monitoring
           p
-            a(href='')
+            a(href='/')
               span.glyphicon.glyphicon-refresh(title="Refresh page")
             != '&nbsp;' + size + ' app(s)'
           table.table.table-striped
             tr
               th Name
+              th Status
               th Version
               th URL
-              th Details
+              th Actions
             each row in rows
               tr
-                td(class=row.status !== 0 ? (row.status === 200 ? "success" : "danger") : "")= row.name
+                td= row.name
+                td(class=row.status !== 0 ? (row.status === 200 ? "success" : "danger") : "")= row.status === 0 ? (row.active == '1' ? 'Pending...' : '') : row.status
                 td= row.health ? row.health.platform.version.substring(0,3) : ''
                 td
-                  if (row.status === 200)
-                    a(href=row.url, target='_blank')= row.url
-                  else
-                    = row.url + (row.status !== 0 ? ' (status ' + row.status + ')' : '')
+                  a(href=row.url, target='_blank')= row.url
                 td
-                  if (row.status === 200)
-                    a.btn.btn-xs.btn-info(href='?name=' + row.name, role='button') Details
+                  div.btn-group(role='group')
+                    if (row.active == '1')
+                      a.btn.btn-xs.btn-warning(href='/?name=' + row.name + '&action=stop', role='button') Stop monitoring
+                    else
+                      a.btn.btn-xs.btn-default(href='/?name=' + row.name + '&action=start', role='button') Start monitoring
+                    if (row.status === 200)
+                      a.btn.btn-xs.btn-info(href='/?name=' + row.name + '&action=health', role='button') Details
       include foot

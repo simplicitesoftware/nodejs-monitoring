@@ -1,10 +1,10 @@
 "use strict";
 
-var debug = false, interval = 300;
+var debug = false, interval = 10;
 
 var mysql = require('mysql');
 var mysqlConfig = {
-	host: process.env.VCAP_MYSQL_HOST || 'localhost',
+	host: process.env.VCAP_MYSQL_HOST || '127.0.0.1',
 	port: parseInt(process.env.VCAP_MYSQL_PORT) || 3306,
 	database: process.env.VCAP_MYSQL_PORT || 'monitoring',
 	user: process.env.VCAP_MYSQL_USER || 'monitoring',
@@ -20,13 +20,16 @@ function getConnection(callback) {
 	});
 }
 
-var apps;
+var nbapps, apps;
 
 function monitorApp(name, callback) {
-	var session = apps[name].session;
-	if (session) {
+	if (!apps[name].session && apps[name].active === '1') {
+		apps[name].session = simplicite.session({ url: apps[name].url, debug: debug });
+		apps[name].session._name = name; // ZZZ Name stored at session level to retrieve it then() functions
+	}
+	if (apps[name].session) {
 		console.log('Request to ' + name);
-		session.getHealth().then(function(health) {
+		apps[name].session.getHealth().then(function(health) {
 			try {
 				var n = health._scope._name;
 				delete health._scope; // Remove scope reference from response
@@ -88,10 +91,11 @@ function monitorApp(name, callback) {
 			try {
 				var n = err._scope._name;
 				delete err._scope; // Remove scope reference from response
-				apps[n].status = err.status || 404;
-				delete apps[n].health;
+				var s = err.status || 404;
+				var alert = apps[n].status === 200 && s !== 200;
+				apps[n].status = s;
+				if (alert) sendAlert(n); // Send alert once when status is not 200
 				console.error('Error on ' + n + ' = ' + err.message);
-				// TODO: send email
 			} catch(e) {
 				console.error(e);
 			}
@@ -104,19 +108,37 @@ function monitorApps() {
 	setTimeout(monitorApps, interval * 1000);
 }
 
+var mailfrom = process.env.VCAP_MAIL_FROM;
+var mailto = process.env.VCAP_MAIL_TO;
+var mailer = require('nodemailer');
+var smtp = require('nodemailer-smtp-transport');
+var mailhost = process.env.VCAP_MAIL_HOST || '127.0.0.1';
+var mailport = parseInt(process.env.VCAP_MAIL_PORT) || 25;
+var mailtransport = mailer.createTransport(new smtp({ host: mailhost, port: mailport }));
+function sendAlert(name) {
+	var a = apps[name];
+	console.log("Send alert for " + name);
+	if (mailfrom && mailto) {
+		mailtransport.sendMail({
+			from: mailfrom,
+			to: mailto,
+			subject: 'Monitoring alert on ' + name,
+			html: '<html><body style="font-family: Arial;"><p>Application <b>' + name + '</b> (<a href="' + a.url + '">' + a.url + '</a>) seems down<br/>Status = <b>' + a.status + '</b></p></body></html>'
+		});
+	}
+}
+
 var simplicite = require('simplicite');
 getConnection(function(conn) {
 	conn.query('select name, url, active from monitoring_app order by name', function (err, rs) {
 		apps = {};
+		nbapps = 0;
 		if (!err) {
-			for (var k = 0; k < rs.length; k++) {
+			nbapps = rs.length;
+			for (var k = 0; k < nbapps; k++) {
 				var r = rs[k];
 				apps[r.name] = r;
 				apps[r.name].status = 0;
-				if (r.active === '1') {
-					apps[r.name].session = simplicite.session({ url: r.url, debug: debug });
-					apps[r.name].session._name = r.name; // ZZZ Name stored at session level to retreive it then() functions
-				}
 			}
 			monitorApps();
 			conn.destroy();
@@ -128,7 +150,7 @@ getConnection(function(conn) {
 			server.set('views', __dirname + '/views');
 	
 			var args = process.argv.slice(2);
-			var serverHost = process.env.VCAP_APP_HOST || args[0] || 'localhost';
+			var serverHost = process.env.VCAP_APP_HOST || args[0] || '127.0.0.1';
 			var serverPort = process.env.VCAP_APP_PORT || args[1] || 3000;
 	
 			var basicAuth = require('basic-auth');
@@ -156,25 +178,49 @@ getConnection(function(conn) {
 				} else {
 					var name = req.query ? req.query.name : null;
 					if (name) {
-						// TODO: create/delete/update
-						//getConnection(function(c) {
-							//c.query('insert into monitoring_app(name, url) values (?)', { name: name, url: url }, callback);
-							//c.query('delete from monitoring_app where name = \'' + name + '\'', callback);
-							//c.query('update monitoring_app set ? where name = \'' + name + '\'', data, callback);
-						//});
-						var force = req.query ? req.query.force : null;
-						if (force)
-							monitorApp(name, render);
-						else
-							render(name);
+						var action = req.query.action;
+						if (action === 'start' || action === 'stop') {
+							var a = action === 'start' ? '1' : '0';
+							getConnection(function(c) {
+								console.log('Application ' + name + ', active = ' + a);
+								c.query('update monitoring_app set active = \'' + a + '\' where name = \'' + name + '\'', function(err) {
+									if (!err) {
+										apps[name].active = a;
+										apps[name].status = 0;
+										delete apps[name].health;
+										delete apps[name].session;
+										res.render('index', { size: nbapps, rows: apps });
+									} else {
+										console.error('MySQL error: ' + err.stack);
+										res.render('error', { error: err.message })
+									}
+								});
+							});
+						//} else if (action === 'add') {
+							//getConnection(function(c) {
+								//c.query('insert into monitoring_app(name, url) values (?)', { name: name, url: url }, function(err) {...});
+							//});
+						//} else if (action === 'remove') {
+							//getConnection(function(c) {
+								//c.query('delete from monitoring_app where name = \'' + name + '\'', function(err) {...});
+							//});
+						} else { // action === 'health'
+							var force = req.query ? req.query.force : null;
+							if (force)
+								monitorApp(name, render);
+							else
+								render(name);
+						}
 					} else
-						res.render('index', { size: rs.length, rows: apps });
+						res.render('index', { size: nbapps, rows: apps });
 				}
 			});
 
 			server.listen(serverPort, serverHost);
 			console.log('Server listening on ' + serverHost + ':' + serverPort);
-		} else
-			console.error(err);
+		} else {
+			console.error('MySQL error: ' + err.stack);
+			res.render('error', { error: err.message })
+		}
 	});
 });
