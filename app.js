@@ -1,6 +1,6 @@
 "use strict";
 
-var debug = false, interval = 10;
+var debug = false, interval = 300;
 
 var mysql = require('mysql');
 var mysqlConfig = {
