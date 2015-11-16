@@ -92,7 +92,7 @@ function monitorApp(name, callback) {
 				var n = err._scope._name;
 				delete err._scope; // Remove scope reference from response
 				var s = err.status || 404;
-				var alert = apps[n].status === 200 && s !== 200;
+				var alert = (apps[n].status === 0 || apps[n].status === 200) && s !== 200;
 				apps[n].status = s;
 				if (alert) sendAlert(n); // Send alert once when status is not 200
 				console.error('Error on ' + n + ' = ' + err.message);
@@ -223,4 +223,9 @@ getConnection(function(conn) {
 			res.render('error', { error: err.message })
 		}
 	});
+});
+
+process.on('SIGINT', function() {
+	console.log('Shutdown');
+	process.exit();
 });
