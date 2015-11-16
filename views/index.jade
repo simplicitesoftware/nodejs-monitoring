@@ -3,6 +3,9 @@ html(lang='en')
   head
     include head
   body
+    script.
+      console.log("Loaded at " + new Date());
+      setTimeout(function() { console.log("Reloading..."); document.location.replace("/"); }, 60000);
     div.container(style='margin-top: 25px')
       div.well
         div(style='text-align: center;')
