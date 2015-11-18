@@ -158,10 +158,11 @@ getConnection(function(conn) {
 			var basicAuthPass = process.env.VCAP_APP_PASSWORD || args[3];
 	
 			server.get('/', function(req, res) {
+				// TODO : build data from database
+				var d = undefined;
 				function render(n) {
-					var h = apps[n].health;
-					if (h)
-						res.render('health', h);
+					if (apps[n].health)
+						res.render('health', { health: apps[n].health, data: d });
 					else
 						res.render('error', { error: 'No data for name = ' + n });
 				}

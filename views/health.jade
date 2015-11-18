@@ -2,10 +2,13 @@ doctype html
 html(lang='en')
   head
     include head
-    //- link(rel='stylesheet', href='jqplot/jquery.jqplot.min.css')
-    //- script(type='text/javascript', src='jqplot/jquery.jqplot.min.js')
-    //- script(type='text/javascript', src='jqplot/jqplot.dateAxisRenderer.min.js')
+      if (data)
+        link(rel='stylesheet', href='jqplot/jquery.jqplot.min.css')
+        script(type='text/javascript', src='jqplot/jquery.jqplot.min.js')
+        script(type='text/javascript', src='jqplot/jqplot.dateAxisRenderer.min.js')
   body
+    if (data)
+      script var data = !{JSON.stringify(data)}
     div.container(style='margin-top: 25px')
       div.well
         div(style='text-align: center;')
@@ -16,8 +19,8 @@ html(lang='en')
           p
             a(href='/?name=' + name + '&action=health')
               span.glyphicon.glyphicon-refresh(title="Refresh page")
-            != '&nbsp; date ' + healthcheck.date + ' (elapsed time: ' + healthcheck.elapsedtime + ' ms)&nbsp;'
-            a(href='/?name=' + name + "&action=health&force=true")
+            != '&nbsp; date ' + health.healthcheck.date + ' (elapsed time: ' + health.healthcheck.elapsedtime + ' ms)&nbsp;'
+            a(href='/?name=' + health.name + "&action=health&force=true")
               span.glyphicon.glyphicon-flash(title="Call now and refresh page")
       div.row
         div.col-md-4
@@ -29,13 +32,13 @@ html(lang='en')
             tr
               td URL
               td
-                a(href=application.contexturl + application.contextpath, target='_blank')= application.contexturl + application.contextpath
+                a(href=health.application.contexturl + health.application.contextpath, target='_blank')= health.application.contexturl + health.application.contextpath
             tr
               td Active sessions
-              td= application.activesessions
+              td= health.application.activesessions
             tr
               td Users (enabled / total)
-              td= application.enabledusers + ' / ' + application.totalusers
+              td= health.application.enabledusers + ' / ' + health.application.totalusers
         div.col-md-4
           h2 OS
           table.table.table-striped
@@ -44,13 +47,13 @@ html(lang='en')
               th Value
             tr
               td Name
-              td= os.name
+              td= health.os.name
             tr
               td Architecture
-              td= os.architecture
+              td= health.os.architecture
             tr
               td Version
-              td= os.version
+              td= health.os.version
         div.col-md-4
           h2 Platform
           table.table.table-striped
@@ -59,16 +62,16 @@ html(lang='en')
               th Value
             tr
               td Status
-              td= platform.status
+              td= health.platform.status
             tr
               td Version
-              td= platform.version
+              td= health.platform.version
             tr
               td Built date
-              td= platform.builton
+              td= health.platform.builton
             tr
               td Encoding
-              td= platform.encoding
+              td= health.platform.encoding
       div.row
         div.col-md-4
           h2 Java VM
@@ -78,13 +81,13 @@ html(lang='en')
               th Value
             tr
               td Name
-              td= javavm.vendor + ' ' + javavm.vmname 
+              td= health.javavm.vendor + ' ' + health.javavm.vmname 
             tr
               td Version
-              td= javavm.version + ' ' + javavm.vmversion
+              td= health.javavm.version + ' ' + health.javavm.vmversion
             tr
               td Heap (max / used / free)
-              td= javavm.heapmaxsize + ' / ' + javavm.heapsize + ' / ' + javavm.heapfree
+              td= health.javavm.heapmaxsize + ' / ' + health.javavm.heapsize + ' / ' + health.javavm.heapfree
         div.col-md-4
           h2 Cache
           table.table.table-striped
@@ -93,13 +96,13 @@ html(lang='en')
               th Value
             tr
               td Grants (used / max)
-              td= cache.grantcache + ' / ' + cache.grantcachemax
+              td= health.cache.grantcache + ' / ' + health.cache.grantcachemax
             tr
               td Objects (used / max)
-              td= cache.objectcache + ' / ' + cache.objectcachemax
+              td= health.cache.objectcache + ' / ' + health.cache.objectcachemax
             tr
               td Process (used / max)
-              td= cache.processcache + ' / ' + cache.processcachemax
+              td= health.cache.processcache + ' / ' + health.cache.processcachemax
         div.col-md-4
           h2 Disk
           table.table.table-striped
@@ -108,5 +111,10 @@ html(lang='en')
               th Value
             tr
               td Disk (free / usable)
-              td= disk.diskfree + ' / ' + disk.diskusable
+              td= health.disk.diskfree + ' / ' + health.disk.diskusable
+      div.row
+        div.col-md-6#memory
+          Memory chart
+        div.col-md-6#sessions
+          Sessions chart
       include foot
