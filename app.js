@@ -43,17 +43,17 @@ function sendAlert(name) {
 var simplicite = require('simplicite');
 var nbapps, apps;
 
-var Datastore = require('nedb')
-var db = new Datastore({ filename: 'app.db' });
+/*var Datastore = require('nedb')
+var db = new Datastore({ filename: 'app.dat' });
 db.loadDatabase(function (err) {
 	if (!err) {
 			console.log('Database loaded');
-			/*db.insert({ name: name, url: url, active: active }, function (err, doc) {
-				console.log(doc);
-			});*/
+			//db.insert({ name: name, url: url, active: active }, function (err, doc) {
+			//	console.log(doc);
+			//});
 			start();
 	} else console.log(err);
-});
+});*/
 
 function monitorApp(name, callback) {
 	if (!apps[name].session && apps[name].active === '1') {

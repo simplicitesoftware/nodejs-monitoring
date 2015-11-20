@@ -54,9 +54,10 @@ html(lang='en')
             tr
               td Version
               td= health.os.version
-            tr
-              td Database name
-              td= health.database.productname + ' ' + health.database.productversion
+            if (health.database)
+              tr
+                td Database name
+                td= health.database.productname + ' ' + health.database.productversion
         div.col-md-4
           h2 Platform
           table.table.table-striped
