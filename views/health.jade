@@ -33,9 +33,10 @@ html(lang='en')
               td URL
               td
                 a(href=health.application.contexturl + health.application.contextpath, target='_blank')= health.application.contexturl + health.application.contextpath
-            tr
-              td Active sessions
-              td= health.application.activesessions
+            if (health.application.activesessions)
+              tr
+                td Active sessions
+                td= health.application.activesessions
             tr
               td Users (enabled / total)
               td= health.application.enabledusers + ' / ' + health.application.totalusers

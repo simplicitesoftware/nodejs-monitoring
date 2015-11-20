@@ -86,7 +86,6 @@ function monitorApp(name, callback) {
 					health.cache.processcache = parseInt(c[0]); 
 					health.cache.processcachemax = parseInt(c[1]); 
 				}
-				if (!health.application.activesessions) health.application.activesessions = 0;
 
 				apps[n].status = 200;
 				apps[n].health = health;
