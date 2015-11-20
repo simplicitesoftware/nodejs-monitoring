@@ -54,6 +54,7 @@ db.loadDatabase(function (err) {
 			start();
 	} else console.log(err);
 });*/
+start();
 
 function monitorApp(name, callback) {
 	if (!apps[name].session && apps[name].active === '1') {
