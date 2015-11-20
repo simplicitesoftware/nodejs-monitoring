@@ -40,7 +40,7 @@ html(lang='en')
               td Users (enabled / total)
               td= health.application.enabledusers + ' / ' + health.application.totalusers
         div.col-md-4
-          h2 OS
+          h2 OS and database
           table.table.table-striped
             tr
               th Code
@@ -54,6 +54,9 @@ html(lang='en')
             tr
               td Version
               td= health.os.version
+            tr
+              td Database name
+              td= health.database.productname + ' ' + health.database.productversion
         div.col-md-4
           h2 Platform
           table.table.table-striped
@@ -112,9 +115,12 @@ html(lang='en')
             tr
               td Disk (free / usable)
               td= health.disk.diskfree + ' / ' + health.disk.diskusable
-      div.row
-        div.col-md-6#memory
-          Memory chart
-        div.col-md-6#sessions
-          Sessions chart
+      if (data)
+        div.row
+          div.col-md-6#memory
+            h2 Memory chart
+            p TODO
+          div.col-md-6#sessions
+            h2 Sessions chart
+            p TODO
       include foot

@@ -20,7 +20,40 @@ function getConnection(callback) {
 	});
 }
 
+var mailfrom = process.env.VCAP_MAIL_FROM;
+var mailto = process.env.VCAP_MAIL_TO;
+var mailer = require('nodemailer');
+var smtp = require('nodemailer-smtp-transport');
+var mailhost = process.env.VCAP_MAIL_HOST || '127.0.0.1';
+var mailport = parseInt(process.env.VCAP_MAIL_PORT) || 25;
+var mailtransport = mailer.createTransport(new smtp({ host: mailhost, port: mailport }));
+function sendAlert(name) {
+	var a = apps[name];
+	console.log("Send alert for " + name);
+	if (mailfrom && mailto) {
+		mailtransport.sendMail({
+			from: mailfrom,
+			to: mailto,
+			subject: 'Monitoring alert on ' + name,
+			html: '<html><body style="font-family: Arial;"><p>Application <b>' + name + '</b> (<a href="' + a.url + '">' + a.url + '</a>) seems down<br/>Status = <b>' + a.status + '</b></p></body></html>'
+		});
+	}
+}
+
+var simplicite = require('simplicite');
 var nbapps, apps;
+
+var Datastore = require('nedb')
+var db = new Datastore({ filename: 'app.db' });
+db.loadDatabase(function (err) {
+	if (!err) {
+			console.log('Database loaded');
+			/*db.insert({ name: name, url: url, active: active }, function (err, doc) {
+				console.log(doc);
+			});*/
+			start();
+	} else console.log(err);
+});
 
 function monitorApp(name, callback) {
 	if (!apps[name].session && apps[name].active === '1') {
@@ -108,123 +141,104 @@ function monitorApps() {
 	setTimeout(monitorApps, interval * 1000);
 }
 
-var mailfrom = process.env.VCAP_MAIL_FROM;
-var mailto = process.env.VCAP_MAIL_TO;
-var mailer = require('nodemailer');
-var smtp = require('nodemailer-smtp-transport');
-var mailhost = process.env.VCAP_MAIL_HOST || '127.0.0.1';
-var mailport = parseInt(process.env.VCAP_MAIL_PORT) || 25;
-var mailtransport = mailer.createTransport(new smtp({ host: mailhost, port: mailport }));
-function sendAlert(name) {
-	var a = apps[name];
-	console.log("Send alert for " + name);
-	if (mailfrom && mailto) {
-		mailtransport.sendMail({
-			from: mailfrom,
-			to: mailto,
-			subject: 'Monitoring alert on ' + name,
-			html: '<html><body style="font-family: Arial;"><p>Application <b>' + name + '</b> (<a href="' + a.url + '">' + a.url + '</a>) seems down<br/>Status = <b>' + a.status + '</b></p></body></html>'
-		});
-	}
-}
-
-var simplicite = require('simplicite');
-getConnection(function(conn) {
-	conn.query('select name, url, active from monitoring_app order by name', function (err, rs) {
-		apps = {};
-		nbapps = 0;
-		if (!err) {
-			nbapps = rs.length;
-			for (var k = 0; k < nbapps; k++) {
-				var r = rs[k];
-				apps[r.name] = r;
-				apps[r.name].status = 0;
-			}
-			monitorApps();
-			conn.destroy();
-
-			var express = require('express');
-			var server = express();
-			server.use(express.static(__dirname + '/public'));
-			server.set('view engine', 'jade');
-			server.set('views', __dirname + '/views');
-	
-			var args = process.argv.slice(2);
-			var serverHost = process.env.VCAP_APP_HOST || args[0] || '127.0.0.1';
-			var serverPort = process.env.VCAP_APP_PORT || args[1] || 3000;
-	
-			var basicAuth = require('basic-auth');
-			var basicAuthUser = process.env.VCAP_APP_USERNAME || args[2];
-			var basicAuthPass = process.env.VCAP_APP_PASSWORD || args[3];
-	
-			server.get('/', function(req, res) {
-				// TODO : build data from database
-				var d = undefined;
-				function render(n) {
-					if (apps[n].health)
-						res.render('health', { health: apps[n].health, data: d });
-					else
-						res.render('error', { error: 'No data for name = ' + n });
+function start() {
+	getConnection(function(conn) {
+		conn.query('select name, url, active from monitoring_app order by name', function (err, rs) {
+			apps = {};
+			nbapps = 0;
+			if (!err) {
+				nbapps = rs.length;
+				for (var k = 0; k < nbapps; k++) {
+					var r = rs[k];
+					apps[r.name] = r;
+					apps[r.name].status = 0;
 				}
-	
-				res.header('Cache-Control', 'private, no-cache, no-store, no-transform, must-revalidate');
-				res.header('Expires', '-1');
-				res.header('Pragma', 'no-cache');
-	
-				var credentials = basicAuth(req);
-				if (basicAuthUser && basicAuthPass && (!credentials || credentials.name != basicAuthUser || credentials.pass != basicAuthPass)) {
-					res.statusCode = 401;
-					res.setHeader('WWW-Authenticate', 'Basic realm="Monitoring"');
-					res.render('error', { error: 'Access denied' });
-				} else {
-					var name = req.query ? req.query.name : null;
-					if (name) {
-						var action = req.query.action;
-						if (action === 'start' || action === 'stop') {
-							var a = action === 'start' ? '1' : '0';
-							getConnection(function(c) {
-								console.log('Application ' + name + ', active = ' + a);
-								c.query('update monitoring_app set active = \'' + a + '\' where name = \'' + name + '\'', function(err) {
-									if (!err) {
-										apps[name].active = a;
-										apps[name].status = 0;
-										delete apps[name].health;
-										delete apps[name].session;
-										res.render('index', { size: nbapps, rows: apps });
-									} else {
-										console.error('MySQL error: ' + err.stack);
-										res.render('error', { error: err.message })
-									}
+				monitorApps();
+				conn.destroy();
+
+				var express = require('express');
+				var server = express();
+				server.use(express.static(__dirname + '/public'));
+				server.set('view engine', 'jade');
+				server.set('views', __dirname + '/views');
+		
+				var args = process.argv.slice(2);
+				var serverHost = process.env.VCAP_APP_HOST || args[0] || '127.0.0.1';
+				var serverPort = process.env.VCAP_APP_PORT || args[1] || 3000;
+		
+				var basicAuth = require('basic-auth');
+				var basicAuthUser = process.env.VCAP_APP_USERNAME || args[2];
+				var basicAuthPass = process.env.VCAP_APP_PASSWORD || args[3];
+		
+				server.get('/', function(req, res) {
+					// TODO : build data from database
+					var d = [ 1, 2, 3 ];
+					function render(n) {
+						if (apps[n].health)
+							res.render('health', { health: apps[n].health, data: d });
+						else
+							res.render('error', { error: 'No data for name = ' + n });
+					}
+		
+					res.header('Cache-Control', 'private, no-cache, no-store, no-transform, must-revalidate');
+					res.header('Expires', '-1');
+					res.header('Pragma', 'no-cache');
+		
+					var credentials = basicAuth(req);
+					if (basicAuthUser && basicAuthPass && (!credentials || credentials.name != basicAuthUser || credentials.pass != basicAuthPass)) {
+						res.statusCode = 401;
+						res.setHeader('WWW-Authenticate', 'Basic realm="Monitoring"');
+						res.render('error', { error: 'Access denied' });
+					} else {
+						var name = req.query ? req.query.name : null;
+						if (name) {
+							var action = req.query.action;
+							if (action === 'start' || action === 'stop') {
+								var a = action === 'start' ? '1' : '0';
+								getConnection(function(c) {
+									console.log('Application ' + name + ', active = ' + a);
+									c.query('update monitoring_app set active = \'' + a + '\' where name = \'' + name + '\'', function(err) {
+										if (!err) {
+											apps[name].active = a;
+											apps[name].status = 0;
+											delete apps[name].health;
+											delete apps[name].session;
+											res.render('index', { size: nbapps, rows: apps });
+										} else {
+											console.error('MySQL error: ' + err.stack);
+											res.render('error', { error: err.message })
+										}
+									});
 								});
-							});
-						//} else if (action === 'add') {
-							//getConnection(function(c) {
-								//c.query('insert into monitoring_app(name, url) values (?)', { name: name, url: url }, function(err) {...});
-							//});
-						//} else if (action === 'remove') {
-							//getConnection(function(c) {
-								//c.query('delete from monitoring_app where name = \'' + name + '\'', function(err) {...});
-							//});
-						} else { // action === 'health'
-							var force = req.query ? req.query.force : null;
-							if (force)
-								monitorApp(name, render);
-							else
-								render(name);
-						}
-					} else
-						res.render('index', { size: nbapps, rows: apps });
-				}
-			});
+							//} else if (action === 'add') {
+								//getConnection(function(c) {
+									//c.query('insert into monitoring_app(name, url) values (?)', { name: name, url: url }, function(err) {...});
+								//});
+							//} else if (action === 'remove') {
+								//getConnection(function(c) {
+									//c.query('delete from monitoring_app where name = \'' + name + '\'', function(err) {...});
+								//});
+							} else { // action === 'health'
+								var force = req.query ? req.query.force : null;
+								if (force)
+									monitorApp(name, render);
+								else
+									render(name);
+							}
+						} else
+							res.render('index', { size: nbapps, rows: apps });
+					}
+				});
 
-			server.listen(serverPort, serverHost);
-			console.log('Server listening on ' + serverHost + ':' + serverPort);
-		} else {
-			console.error('MySQL error: ' + err.stack);
-			res.render('error', { error: err.message })
-		}
+				server.listen(serverPort, serverHost);
+				console.log('Server listening on ' + serverHost + ':' + serverPort);
+			} else {
+				console.error('MySQL error: ' + err.stack);
+				res.render('error', { error: err.message })
+			}
+		});
 	});
-});
+}
 
 process.on('SIGINT', function() {
 	console.log('Shutdown');
