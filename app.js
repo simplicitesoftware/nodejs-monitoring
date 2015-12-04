@@ -40,6 +40,9 @@ function sendAlert(name) {
 	}
 }
 
+// ZZZ allow invalid SSL certificates
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 var simplicite = require('simplicite');
 var nbapps, apps;
 
