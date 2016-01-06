@@ -217,7 +217,7 @@ function start() {
 								//getConnection(function(c) {
 									//c.query('insert into monitoring_app(name, url) values (?)', { name: name, url: url }, function(err) {...});
 								//});
-							//} else if (action === 'remove') {
+							//} else if (action === 'del') {
 								//getConnection(function(c) {
 									//c.query('delete from monitoring_app where name = \'' + name + '\'', function(err) {...});
 								//});

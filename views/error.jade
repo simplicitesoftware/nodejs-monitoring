@@ -3,12 +3,10 @@ html(lang='en')
   head
     include head
   body
-    div.container(style='margin-top: 25px')
-      div.well
-        div(style='text-align: center;')
-          img(src='logo.png', alt='Simplicit&eacute; Software', style='width: 100%; max-width: 450px;')
+    div.container
+      include header
       div.row
         div.col-md-12
           h1 Error
           pre!= error
-      include foot
+      include footer

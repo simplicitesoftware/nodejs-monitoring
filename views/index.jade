@@ -6,10 +6,8 @@ html(lang='en')
     script.
       console.log("Loaded at " + new Date());
       setTimeout(function() { console.log("Reloading..."); document.location.replace("/"); }, 60000);
-    div.container(style='margin-top: 25px')
-      div.well
-        div(style='text-align: center;')
-          img(src='logo.png', alt='Simplicit&eacute; Software', style='width: 100%; max-width: 450px;')
+    div.container
+      include header
       div.row
         div.col-md-12
           h1 Applications monitoring
@@ -39,4 +37,4 @@ html(lang='en')
                       a.btn.btn-xs.btn-default(href='/?name=' + row.name + '&action=start', role='button') Start monitoring
                     if (row.status === 200)
                       a.btn.btn-xs.btn-info(href='/?name=' + row.name + '&action=health', role='button') Details
-      include foot
+      include footer

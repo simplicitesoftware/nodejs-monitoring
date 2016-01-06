@@ -6,13 +6,10 @@ html(lang='en')
         link(rel='stylesheet', href='jqplot/jquery.jqplot.min.css')
         script(type='text/javascript', src='jqplot/jquery.jqplot.min.js')
         script(type='text/javascript', src='jqplot/jqplot.dateAxisRenderer.min.js')
+        script var data = !{JSON.stringify(data)}
   body
-    if (data)
-      script var data = !{JSON.stringify(data)}
-    div.container(style='margin-top: 25px')
-      div.well
-        div(style='text-align: center;')
-          img(src='logo.png', alt='Simplicit&eacute; Software', style='width: 100%; max-width: 450px;')
+    div.container
+      include header
       div.row
         div.col-md-12
           h1 Monitoring
@@ -125,4 +122,4 @@ html(lang='en')
           div.col-md-6#sessions
             h2 Sessions chart
             p TODO
-      include foot
+      include footer
