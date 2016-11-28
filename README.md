@@ -1,5 +1,5 @@
-![](http://www.simplicitesoftware.com/logos/logo250.png)
----
+![Simplicit&eacute; Software](https://www.simplicite.io/resources/logos/logo250.png)
+***
 
 Simplicit&eacute;&reg; monitoring
 =================================
