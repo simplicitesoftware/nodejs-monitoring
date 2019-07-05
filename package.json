@@ -1,9 +1,9 @@
 {
   "name": "nodejs-monitoring",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A simple monitoring tool for Simplicite(R) written in node.js(R)",
   "dependencies": {
-    "simplicite": "latest",
+    "simplicite": "^1.0.8",
     "express": "latest",
     "pug": "latest",
     "basic-auth": "latest",
