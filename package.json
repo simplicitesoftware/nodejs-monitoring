@@ -1,11 +1,11 @@
 {
   "name": "nodejs-monitoring",
-  "version": "0.0.2",
-  "description": "A simple monitoring tool for Simplicite(R) written in node.js(R)", 
+  "version": "1.0.7",
+  "description": "A simple monitoring tool for Simplicite(R) written in node.js(R)",
   "dependencies": {
     "simplicite": "latest",
     "express": "latest",
-    "jade": "latest",
+    "pug": "latest",
     "basic-auth": "latest",
     "mysql": "latest",
     "nedb": "latest",
@@ -15,8 +15,7 @@
   "engines": {
     "node": "*"
   },
-  "repository": {
-  },
-    "author": "Simplicite Software <contact@simplicitesoftware.com> (http://www.simplicitesoftware.com/)",
-    "license": "Apache-2.0"
+  "repository": {},
+  "author": "Simplicite Software <contact@simplicitesoftware.com> (http://www.simplicitesoftware.com/)",
+  "license": "Apache-2.0"
 }
