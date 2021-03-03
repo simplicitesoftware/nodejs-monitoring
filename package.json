@@ -3,7 +3,7 @@
   "version": "1.0.9",
   "description": "A simple monitoring tool for Simplicite(R) written in node.js(R)",
   "dependencies": {
-    "simplicite": "^1.0.9",
+    "simplicite": "latest",
     "express": "latest",
     "pug": "latest",
     "basic-auth": "latest",
